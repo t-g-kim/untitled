@@ -1,0 +1,41 @@
+{
+  "name": "web-tools-monorepo",
+  "version": "1.0.0",
+  "description": "A collection of modern web applications",
+  "private": true,
+  "workspaces": [
+    "projects/*"
+  ],
+  "scripts": {
+    "build:all": "npm run build --workspaces",
+    "dev:online-editor": "npm run dev --workspace=projects/online-editor",
+    "dev:qr-generator": "npm run dev --workspace=projects/qr-generator", 
+    "dev:emoji-search": "npm run dev --workspace=projects/emoji-search",
+    "dev:file-conversion": "npm run dev --workspace=projects/file-conversion-platform",
+    "test:all": "npm run test --workspaces",
+    "lint:all": "npm run lint --workspaces",
+    "clean": "rimraf projects/*/node_modules projects/*/.next projects/*/out projects/*/build",
+    "install:all": "npm install --workspaces"
+  },
+  "devDependencies": {
+    "rimraf": "^5.0.5"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/web-tools-monorepo.git"
+  },
+  "keywords": [
+    "nextjs",
+    "react",
+    "typescript",
+    "cloudflare-pages",
+    "monorepo",
+    "web-tools"
+  ],
+  "author": "Your Name",
+  "license": "MIT"
+}

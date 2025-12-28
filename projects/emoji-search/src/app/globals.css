@@ -1,0 +1,121 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  
+  /* 추가 그리드 컬럼 */
+  --grid-template-columns-16: repeat(16, minmax(0, 1fr));
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* 이모지 폰트 지원 개선 */
+.emoji {
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", "Android Emoji", "EmojiSymbols", "EmojiOne Mozilla", "Twemoji Mozilla", "Segoe UI Symbol", "Noto Emoji", sans-serif;
+  font-variant-emoji: emoji;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: "liga" off;
+  -webkit-font-feature-settings: "liga" off;
+  font-size: 1.5rem;
+  line-height: 1;
+  display: inline-block;
+}
+
+/* 국기 이모지 특별 처리 - 더 강력한 지원 */
+.flag-emoji {
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", "Twemoji Mozilla", "Android Emoji", "EmojiOne Color", "JoyPixels", sans-serif !important;
+  font-size: 2rem;
+  line-height: 1.2;
+  display: inline-block;
+  text-align: center;
+  vertical-align: middle;
+  font-variant-emoji: emoji;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* 국기 이모지 특별 처리 */
+  font-feature-settings: "cmap" 1, "kern" 1;
+  -webkit-font-feature-settings: "cmap" 1, "kern" 1;
+}
+
+/* 국기 이모지 스팬 요소 */
+.flag-emoji span {
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", "Android Emoji", sans-serif !important;
+  font-variant-emoji: emoji !important;
+  text-rendering: optimizeLegibility !important;
+}
+
+/* Windows 전용 국기 이모지 스타일 */
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+  .flag-emoji span {
+    font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif !important;
+  }
+}
+
+/* Firefox 전용 */
+@-moz-document url-prefix() {
+  .flag-emoji span {
+    font-family: "Apple Color Emoji", "Noto Color Emoji", "Segoe UI Emoji", sans-serif !important;
+  }
+}
+
+/* Windows 10/11에서 국기 이모지 지원 개선 */
+@media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+  .flag-emoji {
+    font-family: "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
+    font-size: 1.8rem;
+  }
+}
+
+/* Windows에서 국기 이모지 지원 개선 */
+@supports not (font-variation-settings: normal) {
+  .flag-emoji {
+    font-family: "Segoe UI Emoji", "Noto Color Emoji", "Apple Color Emoji", "Twemoji Mozilla", sans-serif;
+  }
+}
+
+/* 국기 이모지 컨테이너 */
+.flag-container {
+  min-height: 4rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+/* 국기 이모지가 표시되지 않을 때 폴백 */
+.flag-fallback {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 0.75rem;
+  color: #666;
+  text-align: center;
+  pointer-events: none;
+}
+
+/* 커스텀 그리드 클래스 */
+.grid-cols-16 {
+  grid-template-columns: repeat(16, minmax(0, 1fr));
+}

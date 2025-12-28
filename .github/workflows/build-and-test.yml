@@ -1,0 +1,132 @@
+name: Build and Test All Projects
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  detect-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      online-editor: ${{ steps.changes.outputs.online-editor }}
+      qr-generator: ${{ steps.changes.outputs.qr-generator }}
+      emoji-search: ${{ steps.changes.outputs.emoji-search }}
+      file-conversion: ${{ steps.changes.outputs.file-conversion }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v2
+        id: changes
+        with:
+          filters: |
+            online-editor:
+              - 'projects/online-editor/**'
+            qr-generator:
+              - 'projects/qr-generator/**'
+            emoji-search:
+              - 'projects/emoji-search/**'
+            file-conversion:
+              - 'projects/file-conversion-platform/**'
+
+  build-online-editor:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.online-editor == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: 'projects/online-editor/package-lock.json'
+      
+      - name: Install dependencies
+        run: npm ci
+        working-directory: projects/online-editor
+      
+      - name: Run tests
+        run: npm test
+        working-directory: projects/online-editor
+      
+      - name: Build project
+        run: npm run build
+        working-directory: projects/online-editor
+      
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: online-editor-build
+          path: projects/online-editor/out
+
+  build-qr-generator:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.qr-generator == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: 'projects/qr-generator/package-lock.json'
+      
+      - name: Install dependencies
+        run: npm ci
+        working-directory: projects/qr-generator
+      
+      - name: Run tests
+        run: npm test
+        working-directory: projects/qr-generator
+      
+      - name: Build project
+        run: npm run build
+        working-directory: projects/qr-generator
+
+  build-emoji-search:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.emoji-search == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: 'projects/emoji-search/package-lock.json'
+      
+      - name: Install dependencies
+        run: npm ci
+        working-directory: projects/emoji-search
+      
+      - name: Run tests
+        run: npm test
+        working-directory: projects/emoji-search
+      
+      - name: Build project
+        run: npm run build
+        working-directory: projects/emoji-search
+
+  build-file-conversion:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.file-conversion == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: 'projects/file-conversion-platform/package-lock.json'
+      
+      - name: Install dependencies
+        run: npm ci
+        working-directory: projects/file-conversion-platform
+      
+      - name: Run tests
+        run: npm test
+        working-directory: projects/file-conversion-platform
+      
+      - name: Build project
+        run: npm run build
+        working-directory: projects/file-conversion-platform
