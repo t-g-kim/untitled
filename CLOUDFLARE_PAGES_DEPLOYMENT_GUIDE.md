@@ -187,12 +187,15 @@ npx lighthouse https://your-domain.pages.dev --view
 ### 일반적인 문제들
 
 #### 1. package-lock.json 오류
-**증상**: "The `npm ci` command can only install with an existing package-lock.json"
-**원인**: Cloudflare Pages가 잘못된 디렉토리에서 npm ci를 실행
+**증상**: "The `npm ci` command can only install with an existing package-lock.json" 또는 "`npm ci` can only install packages when your package.json and package-lock.json are in sync"
+**원인**: 
+- Cloudflare Pages가 잘못된 디렉토리에서 npm ci를 실행
+- package.json과 package-lock.json이 동기화되지 않음
 **해결책**:
 1. **Root directory**가 `projects/online-editor`로 정확히 설정되었는지 확인
 2. **Build command**를 `npm install && npm run build`로 설정
-3. 설정 변경 후 **"Retry deployment"** 클릭
+3. **NODE_VERSION**을 `20`으로 설정 (Next.js 16+ 요구사항)
+4. 설정 변경 후 **"Retry deployment"** 클릭
 
 #### 2. 빌드 실패
 **증상**: "Build failed" 오류

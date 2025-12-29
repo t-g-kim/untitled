@@ -24,7 +24,7 @@ Build command: npm install && npm run build
 Build output directory: out
 ```
 
-### 2. 환경 변수 확인
+### 2. 환경 변수 확인 (중요!)
 
 **Environment variables**에서 다음이 설정되어 있는지 확인:
 
@@ -32,6 +32,8 @@ Build output directory: out
 NODE_VERSION = 20
 NPM_FLAGS = --production=false
 ```
+
+⚠️ **중요**: NODE_VERSION을 20으로 설정해야 합니다. Next.js 16+는 Node.js 20.9.0 이상이 필요합니다.
 
 ### 3. 재배포
 
@@ -44,11 +46,17 @@ NPM_FLAGS = --production=false
 설정 변경 후 빌드 로그에서 다음과 같이 표시되어야 함:
 
 ```
+Installing nodejs 20.x.x
 Installing project dependencies: npm install
 ✓ Dependencies installed successfully
 Building application: npm run build
 ✓ Build completed successfully
 ```
+
+**주요 변경사항:**
+- Node.js 버전이 20.x.x로 업그레이드됨
+- `npm install`이 성공적으로 실행됨 (package-lock.json 동기화)
+- Next.js 빌드가 오류 없이 완료됨
 
 ## 추가 확인사항
 
