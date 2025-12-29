@@ -67,7 +67,7 @@ Production branch: master
 ```
 Framework preset: Next.js (Static HTML Export)
 Root directory: projects/online-editor
-Build command: npm run build
+Build command: npm install && npm run build
 Build output directory: out
 ```
 
@@ -186,7 +186,15 @@ npx lighthouse https://your-domain.pages.dev --view
 
 ### 일반적인 문제들
 
-#### 1. 빌드 실패
+#### 1. package-lock.json 오류
+**증상**: "The `npm ci` command can only install with an existing package-lock.json"
+**원인**: Cloudflare Pages가 잘못된 디렉토리에서 npm ci를 실행
+**해결책**:
+1. **Root directory**가 `projects/online-editor`로 정확히 설정되었는지 확인
+2. **Build command**를 `npm install && npm run build`로 설정
+3. 설정 변경 후 **"Retry deployment"** 클릭
+
+#### 2. 빌드 실패
 **증상**: "Build failed" 오류
 **해결책**:
 ```bash
