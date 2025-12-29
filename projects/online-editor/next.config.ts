@@ -12,6 +12,9 @@ const nextConfig: NextConfig = {
     unoptimized: true
   },
   
+  // Asset prefix for proper static file serving
+  assetPrefix: '',
+  
   // Turbopack config with absolute root path
   turbopack: {
     root: path.resolve(__dirname, '../../')
