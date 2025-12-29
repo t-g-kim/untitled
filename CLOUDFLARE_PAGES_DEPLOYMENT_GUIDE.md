@@ -197,7 +197,12 @@ npx lighthouse https://your-domain.pages.dev --view
 3. **NODE_VERSION**을 `20`으로 설정 (Next.js 16+ 요구사항)
 4. 설정 변경 후 **"Retry deployment"** 클릭
 
-#### 2. 빌드 실패
+#### 3. Tailwind CSS PostCSS 호환성 오류
+**증상**: "It looks like you're trying to use `tailwindcss` directly as a PostCSS plugin"
+**원인**: Next.js 16 + Turbopack에서 Tailwind CSS PostCSS 플러그인 변경
+**해결책**: 이미 수정됨 - `@tailwindcss/postcss` 패키지 사용으로 업데이트
+
+#### 4. 빌드 실패
 **증상**: "Build failed" 오류
 **해결책**:
 ```bash
