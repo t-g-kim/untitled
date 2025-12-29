@@ -77,7 +77,7 @@ Build output directory: out
 
 ```
 Variable name: NODE_VERSION
-Variable value: 18
+Variable value: 20
 
 Variable name: NPM_FLAGS  
 Variable value: --production=false

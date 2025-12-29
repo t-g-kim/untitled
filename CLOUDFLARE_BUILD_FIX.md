@@ -29,7 +29,7 @@ Build output directory: out
 **Environment variables**에서 다음이 설정되어 있는지 확인:
 
 ```
-NODE_VERSION = 18
+NODE_VERSION = 20
 NPM_FLAGS = --production=false
 ```
 
