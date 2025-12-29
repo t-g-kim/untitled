@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@monaco-editor/react": "^4.7.0",
+    "@tailwindcss/postcss": "^4.1.18",
     "fast-check": "^4.5.2",
     "next": "16.1.1",
     "pyodide": "^0.29.0",
