@@ -15,10 +15,12 @@ const nextConfig: NextConfig = {
   // Asset prefix for proper static file serving
   assetPrefix: '',
   
-  // Turbopack config with absolute root path
-  turbopack: {
-    root: path.resolve(__dirname, '../../')
-  },
+  // Turbopack 설정 (CI 환경에서는 비활성화)
+  ...(process.env.CI ? {} : {
+    turbopack: {
+      root: path.resolve(process.cwd(), '../../')
+    }
+  }),
   
   webpack: (config, { isServer }) => {
     // Pyodide configuration

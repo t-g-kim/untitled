@@ -1,3 +1,5 @@
+const path = require('path');
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
@@ -12,10 +14,12 @@ const nextConfig = {
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
   },
-  // Turbopack 설정으로 경고 제거
-  turbopack: {
-    root: require('path').resolve(__dirname, '../../')
-  },
+  // Turbopack 설정 (CI 환경에서는 비활성화)
+  ...(process.env.CI ? {} : {
+    turbopack: {
+      root: path.resolve(__dirname, '../../')
+    }
+  }),
 };
 
 module.exports = nextConfig;

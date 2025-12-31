@@ -36,6 +36,8 @@ jobs:
     needs: detect-changes
     if: needs.detect-changes.outputs.online-editor == 'true'
     runs-on: ubuntu-latest
+    env:
+      CI: true
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -64,6 +66,8 @@ jobs:
     needs: detect-changes
     if: needs.detect-changes.outputs.emoji-search == 'true'
     runs-on: ubuntu-latest
+    env:
+      CI: true
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -87,6 +91,8 @@ jobs:
     needs: detect-changes
     if: needs.detect-changes.outputs.qr-generator == 'true'
     runs-on: ubuntu-latest
+    env:
+      CI: true
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -110,6 +116,8 @@ jobs:
     needs: detect-changes
     if: needs.detect-changes.outputs.file-conversion == 'true'
     runs-on: ubuntu-latest
+    env:
+      CI: true
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
