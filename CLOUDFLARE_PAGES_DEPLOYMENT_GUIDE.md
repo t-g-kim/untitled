@@ -1,30 +1,43 @@
-# 🚀 Online Editor - Cloudflare Pages 배포 가이드
+# 🚀 모든 프로젝트 - Cloudflare Pages 배포 가이드
 
-이 가이드는 온라인 코드 에디터를 Cloudflare Pages에 배포하는 전체 과정을 단계별로 안내합니다.
+이 가이드는 모든 프로젝트를 Cloudflare Pages에 배포하는 전체 과정을 단계별로 안내합니다.
 
-## ⚠️ 중요: Pages vs Workers
+## 📋 프로젝트 목록
 
-현재 **Workers** 화면에 있으시는 것 같습니다. 온라인 에디터는 **Pages**로 배포해야 합니다!
+| 프로젝트 | 설명 | 도메인 예시 | Node.js 버전 |
+|---------|------|------------|-------------|
+| **emoji-search** | 이모지 검색 도구 | emoji-search.pages.dev | 20 |
+| **file-conversion-platform** | PDF/Word 변환 플랫폼 | file-conversion.pages.dev | 18 |
+| **online-editor** | 다중 언어 코드 에디터 | code-playground.pages.dev | 20 |
+| **qr-generator** | QR 코드 생성기 | qr-generator.pages.dev | 18 |
 
-- **Workers**: 서버리스 함수 (API, 백엔드 로직)
-- **Pages**: 정적 사이트 호스팅 (React, Next.js 앱)
+---
 
 ## ✅ 사전 준비 확인
 
-### 1. 프로젝트 빌드 테스트
+### 1. 모든 프로젝트 빌드 테스트 완료 ✅
 ```bash
-cd projects/online-editor
-npm run build
+# 각 프로젝트에서 빌드 테스트 완료
+cd projects/emoji-search && npm run build
+cd projects/file-conversion-platform && npm run build  
+cd projects/online-editor && npm run build
+cd projects/qr-generator && npm run build
 ```
-✅ **확인됨**: 빌드가 성공적으로 완료되고 `out/` 폴더가 생성됨
 
-### 2. 필요한 정보
+### 2. SEO 설정 완료 ✅
+- ✅ robots.ts, sitemap.ts 파일 생성
+- ✅ Open Graph, Twitter Cards 설정
+- ✅ manifest.json (PWA 지원)
+- ✅ 정적 자산 (favicon, icons) 생성
+- ✅ _headers, _redirects 파일 생성
+
+### 3. 필요한 정보
 - GitHub 저장소 URL
 - Cloudflare 계정 (무료 계정 가능)
 
 ---
 
-## 🌐 Step 1: Cloudflare Pages 접속 (중요!)
+## 🌐 Step 1: Cloudflare Pages 접속
 
 1. **Cloudflare Dashboard 접속**
    - [https://dash.cloudflare.com/](https://dash.cloudflare.com/) 방문
@@ -32,7 +45,6 @@ npm run build
 2. **Pages 섹션으로 이동** ⚠️ **Workers가 아닙니다!**
    - 왼쪽 사이드바에서 **"Pages"** 클릭
    - 또는 직접 [https://dash.cloudflare.com/pages](https://dash.cloudflare.com/pages) 접속
-   - **"Workers and Pages"** 탭에서 **"Pages"** 탭 선택
 
 ---
 
@@ -48,39 +60,93 @@ npm run build
    - 저장소 접근 권한 승인
 
 3. **저장소 선택**
-   - 모노레포 저장소 선택 (예: `web-tools-monorepo`)
+   - 모노레포 저장소 선택
    - **"Begin setup"** 클릭
 
 ---
 
-## ⚙️ Step 3: 빌드 설정 구성 (중요!)
+## ⚙️ Step 3: 각 프로젝트별 배포 설정
 
-### 프로젝트 설정
+### 🎯 Emoji Search 프로젝트
 
 ```
-Project name: online-code-editor
+Project name: emoji-search
 Production branch: master
+Framework preset: Next.js (Static HTML Export)
+Root directory: projects/emoji-search
+Build command: npm install && npm run build
+Build output directory: out
+Node.js version: 20
 ```
 
-### 빌드 설정 (정확히 입력하세요!)
+**환경 변수:**
+```
+NODE_VERSION = 20
+NPM_FLAGS = --production=false
+NEXT_PUBLIC_SITE_URL = https://emoji-search.pages.dev
+```
+
+---
+
+### 📄 File Conversion Platform 프로젝트
 
 ```
+Project name: file-conversion-platform
+Production branch: master
+Framework preset: Next.js (Static HTML Export)
+Root directory: projects/file-conversion-platform
+Build command: npm install && npm run build
+Build output directory: out
+Node.js version: 18
+```
+
+**환경 변수:**
+```
+NODE_VERSION = 18
+NPM_FLAGS = --production=false
+NEXT_PUBLIC_SITE_URL = https://file-conversion.pages.dev
+```
+
+---
+
+### 💻 Online Editor 프로젝트
+
+```
+Project name: code-playground
+Production branch: master
 Framework preset: Next.js (Static HTML Export)
 Root directory: projects/online-editor
 Build command: npm install && npm run build
 Build output directory: out
+Node.js version: 20
 ```
 
-### 환경 변수 (Advanced settings에서)
+**환경 변수:**
+```
+NODE_VERSION = 20
+NPM_FLAGS = --production=false
+NEXT_PUBLIC_SITE_URL = https://code-playground.pages.dev
+```
 
-**Environment variables** 섹션에서 다음 추가:
+---
+
+### 📱 QR Generator 프로젝트
 
 ```
-Variable name: NODE_VERSION
-Variable value: 20
+Project name: qr-generator
+Production branch: master
+Framework preset: Next.js (Static HTML Export)
+Root directory: projects/qr-generator
+Build command: npm install && npm run build
+Build output directory: out
+Node.js version: 18
+```
 
-Variable name: NPM_FLAGS  
-Variable value: --production=false
+**환경 변수:**
+```
+NODE_VERSION = 18
+NPM_FLAGS = --production=false
+NEXT_PUBLIC_SITE_URL = https://qr-generator.pages.dev
 ```
 
 ---
@@ -89,7 +155,7 @@ Variable value: --production=false
 
 1. **설정 확인**
    - 모든 설정이 올바른지 다시 한 번 확인
-   - 특히 **Root directory**가 `projects/online-editor`인지 확인
+   - 특히 **Root directory**가 정확한지 확인
 
 2. **배포 시작**
    - **"Save and Deploy"** 클릭
@@ -103,214 +169,95 @@ Variable value: --production=false
 
 ## 🔧 Step 5: 배포 후 설정
 
-### 1. 도메인 설정
+### 1. 커스텀 도메인 설정 (선택사항)
+- **"Custom domains"** 탭에서 도메인 추가
+- DNS 설정 업데이트
 
-**기본 도메인:**
-- `online-code-editor.pages.dev` (자동 생성)
+### 2. 환경 변수 추가
+각 프로젝트의 `.env.example` 파일을 참고하여 필요한 환경 변수 추가:
 
-**커스텀 도메인 (선택사항):**
-1. **Custom domains** 탭 클릭
-2. **"Set up a custom domain"** 클릭
-3. 도메인 입력 (예: `editor.yourdomain.com`)
-4. DNS 설정 안내에 따라 CNAME 레코드 추가
-
-### 2. 보안 헤더 설정
-
-**Functions** → **Custom Headers**에서 다음 추가:
-
+**공통 환경 변수:**
 ```
-Cross-Origin-Embedder-Policy: require-corp
-Cross-Origin-Opener-Policy: same-origin
-X-Frame-Options: DENY
-X-Content-Type-Options: nosniff
-Referrer-Policy: origin-when-cross-origin
+NEXT_PUBLIC_GA_ID=G-XXXXXXXXXX
+NEXT_PUBLIC_GOOGLE_VERIFICATION=your-verification-code
+NEXT_PUBLIC_NAVER_VERIFICATION=your-verification-code
 ```
 
-### 3. 캐싱 최적화
-
-**Caching** 섹션에서:
-- **Browser Cache TTL**: 4 hours
-- **Edge Cache TTL**: 1 month
+### 3. 빌드 훅 설정 (선택사항)
+- **"Settings"** > **"Builds & deployments"**
+- GitHub 푸시 시 자동 배포 설정
 
 ---
 
-## 🧪 Step 6: 배포 확인 및 테스트
+## 📊 배포 상태 확인
 
-### 1. 기본 기능 테스트
+### 성공적인 배포 확인사항:
+- ✅ 빌드 로그에 에러 없음
+- ✅ 사이트 접속 가능
+- ✅ robots.txt 접속 가능 (`/robots.txt`)
+- ✅ sitemap.xml 접속 가능 (`/sitemap.xml`)
+- ✅ manifest.json 접속 가능 (`/manifest.json`)
+- ✅ 모든 정적 자산 로드 확인
 
-배포된 사이트에서 다음 기능들을 테스트:
-
-- [ ] **페이지 로딩**: 사이트가 정상적으로 로드되는지
-- [ ] **언어 선택**: 드롭다운에서 언어 변경 가능한지
-- [ ] **코드 에디터**: Monaco 에디터가 정상 작동하는지
-- [ ] **JavaScript 실행**: 간단한 JS 코드 실행 테스트
-- [ ] **Python 실행**: Pyodide 로딩 및 Python 코드 실행
-- [ ] **HTML 미리보기**: HTML 코드의 라이브 프리뷰
-- [ ] **로컬 스토리지**: 코드 자동 저장 기능
-- [ ] **반응형 디자인**: 모바일/태블릿에서 정상 작동
-
-### 2. 성능 테스트
-
-```bash
-# Lighthouse 점수 확인
-npx lighthouse https://your-domain.pages.dev --view
+### 각 프로젝트별 테스트 URL:
 ```
-
-**목표 점수:**
-- Performance: 90+
-- Accessibility: 95+
-- Best Practices: 90+
-- SEO: 90+
-
----
-
-## 🔄 Step 7: 자동 배포 설정
-
-### GitHub Actions 연동 (이미 설정됨)
-
-모노레포에 이미 GitHub Actions가 설정되어 있어서:
-
-1. **자동 빌드**: `projects/online-editor/` 폴더 변경 시 자동 빌드
-2. **자동 배포**: main 브랜치에 푸시 시 Cloudflare Pages 자동 배포
-3. **프리뷰 배포**: Pull Request 생성 시 미리보기 환경 자동 생성
-
-### 배포 워크플로우
-
-```
-코드 변경 → GitHub 푸시 → GitHub Actions 빌드 → Cloudflare Pages 배포
+https://emoji-search.pages.dev
+https://file-conversion.pages.dev  
+https://code-playground.pages.dev
+https://qr-generator.pages.dev
 ```
 
 ---
 
-## 🚨 문제 해결
+## 🐛 문제 해결
 
-### 일반적인 문제들
+### 빌드 실패 시:
+1. **Node.js 버전 확인**
+   - emoji-search, online-editor: Node.js 20
+   - file-conversion-platform, qr-generator: Node.js 18
 
-#### 1. package-lock.json 오류
-**증상**: "The `npm ci` command can only install with an existing package-lock.json" 또는 "`npm ci` can only install packages when your package.json and package-lock.json are in sync"
-**원인**: 
-- Cloudflare Pages가 잘못된 디렉토리에서 npm ci를 실행
-- package.json과 package-lock.json이 동기화되지 않음
-**해결책**:
-1. **Root directory**가 `projects/online-editor`로 정확히 설정되었는지 확인
-2. **Build command**를 `npm install && npm run build`로 설정
-3. **NODE_VERSION**을 `20`으로 설정 (Next.js 16+ 요구사항)
-4. 설정 변경 후 **"Retry deployment"** 클릭
+2. **Root directory 확인**
+   - 정확한 프로젝트 경로 설정 확인
 
-#### 3. Tailwind CSS PostCSS 호환성 오류
-**증상**: "It looks like you're trying to use `tailwindcss` directly as a PostCSS plugin"
-**원인**: Next.js 16 + Turbopack에서 Tailwind CSS PostCSS 플러그인 변경
-**해결책**: 이미 수정됨 - `@tailwindcss/postcss` 패키지 사용으로 업데이트
+3. **빌드 명령어 확인**
+   - `npm install && npm run build` 사용
 
-#### 4. 빌드 실패
-**증상**: "Build failed" 오류
-**해결책**:
-```bash
-# 로컬에서 빌드 테스트
-cd projects/online-editor
-npm install
-npm run build
+### 404 에러 시:
+1. **_redirects 파일 확인**
+   - SPA 라우팅 설정 확인
 
-# 성공하면 GitHub에 푸시
-git add .
-git commit -m "Fix build issues"
-git push
-```
+2. **Build output directory 확인**
+   - `out` 폴더 설정 확인
 
-#### 2. Pyodide 로딩 실패
-**증상**: Python 코드 실행 시 오류
-**해결책**: 보안 헤더가 올바르게 설정되었는지 확인
-```
-Cross-Origin-Embedder-Policy: require-corp
-Cross-Origin-Opener-Policy: same-origin
-```
+### SEO 문제 시:
+1. **robots.txt, sitemap.xml 확인**
+   - 각각 `/robots.txt`, `/sitemap.xml`로 접속 테스트
 
-#### 3. 정적 파일 404 오류
-**증상**: CSS/JS 파일 로드 실패
-**해결책**: `next.config.ts`에서 `trailingSlash: true` 설정 확인
-
-#### 4. 라우팅 문제
-**증상**: 새로고침 시 404 오류
-**해결책**: `public/_redirects` 파일이 있는지 확인
-```
-/*    /index.html   200
-```
-
----
-
-## 📊 모니터링 및 분석
-
-### 1. Cloudflare Analytics
-- **Real User Monitoring (RUM)**: 실제 사용자 성능 데이터
-- **Page Views**: 페이지 조회수 및 트래픽 패턴
-- **Geographic Distribution**: 지역별 사용자 분포
-
-### 2. 외부 모니터링 도구
-
-**Google Analytics 4 추가 (선택사항):**
-```typescript
-// src/app/layout.tsx에 추가
-<Script
-  src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"
-  strategy="afterInteractive"
-/>
-```
-
----
-
-## 🎯 성능 최적화 팁
-
-### 1. Cloudflare 기능 활용
-- **Auto Minify**: HTML, CSS, JS 자동 압축
-- **Brotli Compression**: 더 나은 압축률
-- **Image Optimization**: 이미지 자동 최적화
-
-### 2. 캐싱 전략
-```
-# 정적 자산 (1년)
-/_next/static/* → Cache Everything, 1 year
-
-# HTML 파일 (1시간)  
-/*.html → Cache Everything, 1 hour
-
-# API 응답 (무캐시)
-/api/* → Bypass Cache
-```
-
----
-
-## ✅ 배포 완료 체크리스트
-
-- [ ] Cloudflare Pages 프로젝트 생성 완료
-- [ ] GitHub 저장소 연결 완료
-- [ ] 빌드 설정 올바르게 구성
-- [ ] 첫 번째 배포 성공
-- [ ] 기본 기능 테스트 완료
-- [ ] 보안 헤더 설정 완료
-- [ ] 성능 최적화 설정 완료
-- [ ] 모니터링 도구 설정 (선택사항)
-- [ ] 커스텀 도메인 설정 (선택사항)
+2. **Open Graph 메타데이터 확인**
+   - 소셜 미디어 공유 테스트
 
 ---
 
 ## 🎉 배포 완료!
 
-축하합니다! 온라인 코드 에디터가 성공적으로 배포되었습니다.
+모든 프로젝트가 성공적으로 배포되면:
 
-**접속 URL**: `https://online-code-editor.pages.dev`
+1. **SEO 최적화 완료** ✅
+   - robots.txt, sitemap.xml 자동 생성
+   - Open Graph, Twitter Cards 설정
+   - 구조화된 데이터 (일부 프로젝트)
 
-### 다음 단계
-1. **다른 프로젝트 배포**: QR Generator, Emoji Search 등
-2. **기능 개선**: 사용자 피드백 반영
-3. **성능 모니터링**: 지속적인 최적화
+2. **PWA 지원** ✅
+   - manifest.json 설정
+   - 서비스 워커 (일부 프로젝트)
 
----
+3. **성능 최적화** ✅
+   - 정적 자산 캐싱
+   - 이미지 최적화
+   - 코드 압축
 
-## 📞 지원
+4. **보안 헤더** ✅
+   - CSP, HSTS 등 보안 설정
+   - XSS 보호
 
-문제가 발생하면:
-1. **Cloudflare 문서**: [https://developers.cloudflare.com/pages/](https://developers.cloudflare.com/pages/)
-2. **GitHub Issues**: 프로젝트 저장소에서 이슈 생성
-3. **Cloudflare Community**: [https://community.cloudflare.com/](https://community.cloudflare.com/)
-
-**Happy Coding! 🚀**
+각 프로젝트는 독립적으로 운영되며, 개별적으로 업데이트 및 관리가 가능합니다.
