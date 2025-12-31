@@ -117,6 +117,29 @@ export default function RootLayout({
             })
           }}
         />
+        
+        {/* 전역 에러 핸들러 - 외부 스크립트 에러 방지 */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.addEventListener('error', function(e) {
+                if (e.filename && e.filename.includes('autofill')) {
+                  e.preventDefault();
+                  console.warn('Autofill script error suppressed:', e.message);
+                  return false;
+                }
+              });
+              
+              window.addEventListener('unhandledrejection', function(e) {
+                if (e.reason && e.reason.toString().includes('autofill')) {
+                  e.preventDefault();
+                  console.warn('Autofill promise rejection suppressed:', e.reason);
+                  return false;
+                }
+              });
+            `
+          }}
+        />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
