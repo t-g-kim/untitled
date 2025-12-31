@@ -54,7 +54,7 @@ jobs:
         working-directory: projects/online-editor
       
       - name: Build project
-        run: npm run build
+        run: npm run build -- --webpack
         working-directory: projects/online-editor
       
       - name: Run tests (if available)
@@ -84,7 +84,7 @@ jobs:
         working-directory: projects/emoji-search
       
       - name: Build project
-        run: npm run build
+        run: npm run build -- --webpack
         working-directory: projects/emoji-search
 
   build-qr-generator:
@@ -134,5 +134,5 @@ jobs:
         working-directory: projects/file-conversion-platform
       
       - name: Build project
-        run: npm run build
+        run: npm run build -- --webpack
         working-directory: projects/file-conversion-platform
