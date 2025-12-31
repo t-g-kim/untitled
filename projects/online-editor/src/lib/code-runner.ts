@@ -73,11 +73,33 @@ export class CodeRunner {
   private async runPython(code: string): Promise<ExecutionResult> {
     try {
       const runner = getPyodideRunner();
+      
+      // Check if Pyodide is ready, if not try to initialize
+      if (!runner.isReady()) {
+        try {
+          await runner.initialize();
+        } catch (initError: any) {
+          return {
+            output: [],
+            errors: [
+              'Pyodide initialization failed. Please refresh the page and try again.',
+              `Details: ${initError.message || initError}`
+            ],
+            executionTime: 0
+          };
+        }
+      }
+      
       return await runner.runCode(code);
     } catch (error: any) {
+      console.error('Python execution error:', error);
       return {
         output: [],
-        errors: [error.message || 'Python execution failed'],
+        errors: [
+          'Python execution failed.',
+          error.message || 'Unknown error occurred',
+          'Try refreshing the page if the problem persists.'
+        ],
         executionTime: 0
       };
     }

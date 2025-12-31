@@ -22,19 +22,27 @@ class PyodideRunnerImpl implements PyodideRunner {
   private pyodide: any = null;
   private ready = false;
   private initializing = false;
+  private initPromise: Promise<void> | null = null;
 
   async initialize(): Promise<void> {
     if (this.ready) return;
-    if (this.initializing) {
-      // Wait for existing initialization to complete
-      while (this.initializing && !this.ready) {
-        await new Promise(resolve => setTimeout(resolve, 100));
-      }
-      return;
+    
+    // Return existing initialization promise if already initializing
+    if (this.initializing && this.initPromise) {
+      return this.initPromise;
     }
 
     this.initializing = true;
+    this.initPromise = this.doInitialize();
+    
+    try {
+      await this.initPromise;
+    } finally {
+      this.initializing = false;
+    }
+  }
 
+  private async doInitialize(): Promise<void> {
     try {
       console.log('Starting Pyodide initialization...');
       
@@ -45,24 +53,27 @@ class PyodideRunnerImpl implements PyodideRunner {
         throw new Error('Pyodide script not loaded');
       }
       
+      console.log('Loading Pyodide...');
       this.pyodide = await window.loadPyodide({
-        indexURL: 'https://cdn.jsdelivr.net/pyodide/v0.26.2/full/',
+        indexURL: 'https://cdn.jsdelivr.net/pyodide/v0.29.0/full/',
+        stdout: (text: string) => console.log('Python stdout:', text),
+        stderr: (text: string) => console.error('Python stderr:', text),
       });
 
       console.log('Pyodide loaded successfully');
 
       // Test basic functionality
-      this.pyodide.runPython(`
+      await this.pyodide.runPythonAsync(`
 import sys
 print("Python", sys.version)
+print("Pyodide initialization complete")
 `);
 
       this.ready = true;
-      this.initializing = false;
       console.log('Pyodide initialization completed successfully');
     } catch (error: any) {
-      this.initializing = false;
       console.error('Failed to initialize Pyodide:', error);
+      this.ready = false;
       throw new Error(`Pyodide initialization failed: ${error.message || error}`);
     }
   }
@@ -107,33 +118,56 @@ print("Python", sys.version)
     const errors: string[] = [];
 
     try {
-      // Simple approach: capture print output
-      this.pyodide.runPython(`
+      // Setup output capture
+      await this.pyodide.runPythonAsync(`
 import sys
-from io import StringIO
+import io
+import contextlib
 
-# Capture stdout
-old_stdout = sys.stdout
-sys.stdout = captured_output = StringIO()
+# Create string buffers for stdout and stderr
+stdout_buffer = io.StringIO()
+stderr_buffer = io.StringIO()
+
+# Context manager to capture output
+@contextlib.contextmanager
+def capture_output():
+    old_stdout, old_stderr = sys.stdout, sys.stderr
+    try:
+        sys.stdout, sys.stderr = stdout_buffer, stderr_buffer
+        yield
+    finally:
+        sys.stdout, sys.stderr = old_stdout, old_stderr
 `);
 
       try {
-        // Execute user code
-        this.pyodide.runPython(code);
+        // Execute user code with output capture
+        await this.pyodide.runPythonAsync(`
+with capture_output():
+${code.split('\n').map(line => '    ' + line).join('\n')}
+`);
       } catch (execError: any) {
         errors.push(execError.message || 'Execution error');
       }
 
-      // Get captured output and restore stdout
-      const result = this.pyodide.runPython(`
-output = captured_output.getvalue()
-sys.stdout = old_stdout
-output
-`);
+      // Get captured output
+      const stdoutResult = await this.pyodide.runPythonAsync('stdout_buffer.getvalue()');
+      const stderrResult = await this.pyodide.runPythonAsync('stderr_buffer.getvalue()');
       
-      if (result) {
-        output.push(...result.split('\n').filter((line: string) => line.trim()));
+      if (stdoutResult && stdoutResult.trim()) {
+        output.push(...stdoutResult.split('\n').filter((line: string) => line.trim()));
       }
+      
+      if (stderrResult && stderrResult.trim()) {
+        errors.push(...stderrResult.split('\n').filter((line: string) => line.trim()));
+      }
+
+      // Clear buffers for next execution
+      await this.pyodide.runPythonAsync(`
+stdout_buffer.seek(0)
+stdout_buffer.truncate(0)
+stderr_buffer.seek(0)
+stderr_buffer.truncate(0)
+`);
       
     } catch (error: any) {
       console.error('Python execution error:', error);

@@ -7,8 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "jest",
-    "test:watch": "jest --watch"
+    "test": "jest --run",
+    "test:watch": "jest --watch",
+    "export": "next build"
   },
   "dependencies": {
     "@monaco-editor/react": "^4.7.0",

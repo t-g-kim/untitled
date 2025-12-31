@@ -28,18 +28,30 @@ function CodePlayground() {
   useEffect(() => {
     const initializePyodide = async () => {
       try {
+        setOutput(['🐍 Initializing Python runtime...']);
         const runner = getPyodideRunner();
         await runner.initialize();
+        setOutput(['✅ Python runtime initialized successfully']);
         setIsInitializing(false);
-      } catch (error) {
+      } catch (error: any) {
         console.error('Failed to initialize Pyodide:', error);
-        setErrors(['Failed to initialize Python runtime. Python code execution will not work.']);
+        setErrors([
+          '❌ Failed to initialize Python runtime.',
+          'Python code execution will not work.',
+          'Please refresh the page to try again.',
+          `Error: ${error.message || error}`
+        ]);
         setIsInitializing(false);
       }
     };
 
-    initializePyodide();
-  }, []);
+    // Only initialize Pyodide if Python is selected or if we want to preload it
+    if (currentLanguage === 'python') {
+      initializePyodide();
+    } else {
+      setIsInitializing(false);
+    }
+  }, [currentLanguage]);
 
   // Check and clean localStorage on initial load
   useEffect(() => {
