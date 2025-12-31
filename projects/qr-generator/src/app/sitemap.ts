@@ -3,7 +3,7 @@ import { MetadataRoute } from 'next'
 export const dynamic = 'force-static'
  
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://emoji-search.pages.dev'
+  const baseUrl = 'https://qr-generator.pages.dev'
   
   return [
     {
@@ -13,7 +13,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 1,
     },
     {
-      url: `${baseUrl}/about`,
+      url: `${baseUrl}/privacy`,
       lastModified: new Date(),
       changeFrequency: 'monthly',
       priority: 0.8,

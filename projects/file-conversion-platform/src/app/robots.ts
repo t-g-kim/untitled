@@ -9,6 +9,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: '/',
       disallow: '/private/',
     },
-    sitemap: 'https://emoji-search.pages.dev/sitemap.xml',
+    sitemap: 'https://file-conversion.pages.dev/sitemap.xml',
   }
 }
