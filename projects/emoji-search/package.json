@@ -4,10 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "next build && node fix-html.js",
+    "build:only": "next build",
     "start": "next start",
     "lint": "eslint",
-    "export": "next build"
+    "export": "next build && node fix-html.js"
   },
   "dependencies": {
     "next": "16.1.1",

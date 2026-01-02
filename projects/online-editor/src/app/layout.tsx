@@ -111,7 +111,6 @@ export default function RootLayout({
         <link 
           href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&amp;display=swap" 
           rel="stylesheet"
-          as="style"
         />
         <script src="/error-handler.js" async></script>
       </head>

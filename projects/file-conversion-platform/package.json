@@ -4,15 +4,16 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "next build && node fix-html.js",
+    "build:only": "next build",
     "start": "next start",
     "lint": "next lint",
     "type-check": "tsc --noEmit",
     "workers:dev": "wrangler dev",
     "workers:deploy": "wrangler deploy",
-    "pages:build": "next build",
+    "pages:build": "next build && node fix-html.js",
     "pages:deploy": "wrangler pages deploy out",
-    "export": "next build"
+    "export": "next build && node fix-html.js"
   },
   "dependencies": {
     "@google-cloud/vision": "^5.3.4",
