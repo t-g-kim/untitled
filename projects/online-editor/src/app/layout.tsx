@@ -113,61 +113,7 @@ export default function RootLayout({
           rel="stylesheet"
           as="style"
         />
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              // 전역 에러 핸들러 - 외부 스크립트 에러 방지
-              window.addEventListener('error', function(e) {
-                // autofill 관련 에러 차단
-                if (e.filename) {
-                  if (e.filename.includes('autofill') || e.filename.includes('extension')) {
-                    e.preventDefault();
-                    console.warn('External script error suppressed:', e.message);
-                    return false;
-                  }
-                }
-                
-                // 특정 에러 메시지 차단
-                if (e.message) {
-                  if (e.message.includes('Cannot use \\'in\\' operator') || 
-                      e.message.includes('animation') ||
-                      e.message.includes('autofill')) {
-                    e.preventDefault();
-                    console.warn('Animation/autofill error suppressed:', e.message);
-                    return false;
-                  }
-                }
-              });
-              
-              window.addEventListener('unhandledrejection', function(e) {
-                if (e.reason) {
-                  var reasonStr = e.reason.toString();
-                  if (reasonStr.includes('autofill') || 
-                      reasonStr.includes('animation') ||
-                      reasonStr.includes('Cannot use \\'in\\' operator')) {
-                    e.preventDefault();
-                    console.warn('Promise rejection suppressed:', reasonStr);
-                    return false;
-                  }
-                }
-              });
-              
-              // 추가적인 전역 에러 처리
-              window.onerror = function(message, source, lineno, colno, error) {
-                if (source && (source.includes('autofill') || source.includes('extension'))) {
-                  console.warn('Global error suppressed:', message);
-                  return true; // 에러 처리됨을 표시
-                }
-                if (message && (message.includes('Cannot use \\'in\\' operator') || 
-                               message.includes('animation'))) {
-                  console.warn('Animation error suppressed:', message);
-                  return true;
-                }
-                return false; // 다른 에러는 정상 처리
-              };
-            `
-          }}
-        />
+        <script src="/error-handler.js" async></script>
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-900 text-white`}
