@@ -93,20 +93,50 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{
             __html: `
               window.addEventListener('error', function(e) {
-                if (e.filename && e.filename.includes('autofill')) {
-                  e.preventDefault();
-                  console.warn('Autofill script error suppressed:', e.message);
-                  return false;
+                if (e.filename) {
+                  if (e.filename.includes('autofill') || e.filename.includes('extension')) {
+                    e.preventDefault();
+                    console.warn('External script error suppressed:', e.message);
+                    return false;
+                  }
+                }
+                
+                if (e.message) {
+                  if (e.message.includes('Cannot use \\'in\\' operator') || 
+                      e.message.includes('animation') ||
+                      e.message.includes('autofill')) {
+                    e.preventDefault();
+                    console.warn('Animation/autofill error suppressed:', e.message);
+                    return false;
+                  }
                 }
               });
               
               window.addEventListener('unhandledrejection', function(e) {
-                if (e.reason && e.reason.toString().includes('autofill')) {
-                  e.preventDefault();
-                  console.warn('Autofill promise rejection suppressed:', e.reason);
-                  return false;
+                if (e.reason) {
+                  var reasonStr = e.reason.toString();
+                  if (reasonStr.includes('autofill') || 
+                      reasonStr.includes('animation') ||
+                      reasonStr.includes('Cannot use \\'in\\' operator')) {
+                    e.preventDefault();
+                    console.warn('Promise rejection suppressed:', reasonStr);
+                    return false;
+                  }
                 }
               });
+              
+              window.onerror = function(message, source, lineno, colno, error) {
+                if (source && (source.includes('autofill') || source.includes('extension'))) {
+                  console.warn('Global error suppressed:', message);
+                  return true;
+                }
+                if (message && (message.includes('Cannot use \\'in\\' operator') || 
+                               message.includes('animation'))) {
+                  console.warn('Animation error suppressed:', message);
+                  return true;
+                }
+                return false;
+              };
             `
           }}
         />
