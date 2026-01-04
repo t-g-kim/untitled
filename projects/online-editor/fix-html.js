@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-// HTML 파일들을 찾아서 Content-Type 메타 태그 추가
+// HTML 파일들을 찾아서 DOCTYPE과 Content-Type 메타 태그 수정
 function fixHtmlFiles(dir) {
   const files = fs.readdirSync(dir);
   
@@ -14,16 +14,28 @@ function fixHtmlFiles(dir) {
     } else if (file.endsWith('.html')) {
       let content = fs.readFileSync(filePath, 'utf8');
       
-      // Content-Type 메타 태그가 없으면 추가
+      // DOCTYPE을 더 명확하게 수정
+      content = content.replace(
+        /<!DOCTYPE html>/gi,
+        '<!DOCTYPE html>'
+      );
+      
+      // Content-Type 메타 태그가 없으면 추가 (가장 앞에)
       if (!content.includes('http-equiv="Content-Type"')) {
         content = content.replace(
-          '<meta charSet="utf-8"/>',
-          '<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><meta charSet="utf-8"/>'
+          /<head>/i,
+          '<head>\n<meta http-equiv="Content-Type" content="text/html; charset=utf-8">'
         );
-        
-        fs.writeFileSync(filePath, content, 'utf8');
-        console.log(`Fixed: ${filePath}`);
       }
+      
+      // HTML 엔티티 인코딩 문제 수정
+      content = content.replace(/&amp;display=swap/g, '&display=swap');
+      
+      // XML 선언 제거 (있다면)
+      content = content.replace(/<\?xml[^>]*\?>\s*/gi, '');
+      
+      fs.writeFileSync(filePath, content, 'utf8');
+      console.log(`Fixed: ${filePath}`);
     }
   });
 }
