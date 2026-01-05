@@ -105,8 +105,8 @@ export default function RootLayout({
         {/* HTML 엔티티 수정 스크립트 - 가장 먼저 로드 */}
         <script src="/fix-entities.js"></script>
         
-        {/* 에러 핸들러 - 외부 파일만 사용 */}
-        <script src="/error-handler.js"></script>
+        {/* 에러 핸들러 */}
+        <script src="/error-handler.js" async></script>
         
         <script 
           src="https://cdn.jsdelivr.net/pyodide/v0.29.0/full/pyodide.js"
@@ -118,7 +118,6 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600" 
           rel="stylesheet"
         />
-        <script src="/error-handler.js" async></script>
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-900 text-white`}
