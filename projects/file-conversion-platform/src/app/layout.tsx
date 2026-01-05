@@ -88,6 +88,9 @@ export default function RootLayout({
   return (
     <html lang="ko" suppressHydrationWarning>
       <head>
+        {/* HTML 엔티티 수정 스크립트 - 가장 먼저 로드 */}
+        <script src="/fix-entities.js"></script>
+        
         {/* 전역 에러 핸들러 - 외부 스크립트 에러 방지 */}
         <script src="/error-handler.js" async></script>
       </head>

@@ -82,6 +82,9 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <head>
+        {/* HTML 엔티티 수정 스크립트 - 가장 먼저 로드 */}
+        <script src="/fix-entities.js"></script>
+        
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
