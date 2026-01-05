@@ -102,29 +102,22 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark" suppressHydrationWarning={true}>
       <head>
-        {/* 즉시 실행되는 에러 핸들러 - 가장 먼저 로드 */}
+        {/* HTML 엔티티 수정 스크립트 - 가장 먼저 로드 */}
+        <script src="/fix-entities.js"></script>
+        
+        {/* 즉시 실행되는 에러 핸들러 */}
         <script 
           dangerouslySetInnerHTML={{
             __html: `
-              (function() {
-                'use strict';
-                if (typeof window !== 'undefined') {
-                  window.onerror = function(message, source, lineno, colno, error) {
-                    if (source && (source.includes('autofill') || source.includes('extension') || source.includes('bundle.js'))) {
-                      console.warn('Global error suppressed:', message);
-                      return true;
-                    }
-                    if (message && (message.includes('Cannot use \\'in\\' operator') || message.includes('animation') || message.includes('autofill'))) {
-                      console.warn('Animation error suppressed:', message);
-                      return true;
-                    }
-                    return false;
-                  };
-                }
-              })();
+              window.onerror = function(msg, src) {
+                if (src && src.includes('autofill')) return true;
+                if (msg && msg.includes('Cannot use')) return true;
+                return false;
+              };
             `
           }}
         />
+        
         <script 
           src="https://cdn.jsdelivr.net/pyodide/v0.29.0/full/pyodide.js"
           async
@@ -132,7 +125,7 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link 
-          href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" 
+          href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600" 
           rel="stylesheet"
         />
         <script src="/error-handler.js" async></script>

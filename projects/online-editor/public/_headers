@@ -12,6 +12,7 @@
   Content-Type: text/html; charset=utf-8
   X-Content-Type-Options: nosniff
 
+# 모든 경로를 HTML로 처리 (가장 강력한 설정)
 /*
   Content-Type: text/html; charset=utf-8
   X-Content-Type-Options: nosniff
