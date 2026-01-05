@@ -15,12 +15,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Code Playground - Multi-Language Online Editor",
   description: "Write, run, and share code in multiple languages in your browser. Supports Python, JavaScript, TypeScript, HTML, CSS, and JSON. No installation required.",
-  keywords: [
-    "code editor", "online compiler", "python", "javascript", "typescript", "html", "css", "json", 
-    "programming", "coding", "web development", "online IDE", "code playground",
-    "python online", "javascript online", "typescript online", "html editor", "css editor",
-    "code runner", "browser IDE", "no installation", "free coding", "learn programming"
-  ].join(", "),
+  keywords: "code editor, online compiler, python, javascript, typescript, html, css, json, programming, coding, web development, online IDE, code playground, python online, javascript online, typescript online, html editor, css editor, code runner, browser IDE, no installation, free coding, learn programming",
   authors: [{ name: "Code Playground" }],
   creator: "Code Playground",
   publisher: "Code Playground",
@@ -32,17 +27,6 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://code-playground.pages.dev'),
   alternates: {
     canonical: '/',
-  },
-  icons: {
-    icon: [
-      { url: "/favicon.svg", type: "image/svg+xml" },
-      { url: "/icon.svg", type: "image/svg+xml", sizes: "32x32" },
-      { url: "/icon-192.svg", type: "image/svg+xml", sizes: "192x192" },
-      { url: "/icon-512.svg", type: "image/svg+xml", sizes: "512x512" },
-    ],
-    apple: [
-      { url: "/apple-touch-icon.svg", type: "image/svg+xml", sizes: "180x180" },
-    ],
   },
   manifest: "/manifest.json",
   openGraph: {
@@ -70,19 +54,6 @@ export const metadata: Metadata = {
   robots: {
     index: true,
     follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      'max-video-preview': -1,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
-    },
-  },
-  verification: {
-    google: 'your-google-verification-code',
-    other: {
-      'naver-site-verification': 'your-naver-verification-code',
-    },
   },
 };
 
@@ -102,12 +73,9 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark" suppressHydrationWarning={true}>
       <head>
-        {/* HTML 엔티티 수정 스크립트 - 가장 먼저 로드 */}
-        <script src="/fix-entities.js"></script>
-        
-        {/* 에러 핸들러 */}
-        <script src="/error-handler.js" async></script>
-        
+        <meta httpEquiv="Content-Type" content="text/html; charset=utf-8" />
+        <script src="/fix-entities.js" />
+        <script src="/error-handler.js" async />
         <script 
           src="https://cdn.jsdelivr.net/pyodide/v0.29.0/full/pyodide.js"
           async
