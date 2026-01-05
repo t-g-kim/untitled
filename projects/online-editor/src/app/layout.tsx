@@ -105,18 +105,8 @@ export default function RootLayout({
         {/* HTML 엔티티 수정 스크립트 - 가장 먼저 로드 */}
         <script src="/fix-entities.js"></script>
         
-        {/* 즉시 실행되는 에러 핸들러 */}
-        <script 
-          dangerouslySetInnerHTML={{
-            __html: `
-              window.onerror = function(msg, src) {
-                if (src && src.includes('autofill')) return true;
-                if (msg && msg.includes('Cannot use')) return true;
-                return false;
-              };
-            `
-          }}
-        />
+        {/* 에러 핸들러 - 외부 파일만 사용 */}
+        <script src="/error-handler.js"></script>
         
         <script 
           src="https://cdn.jsdelivr.net/pyodide/v0.29.0/full/pyodide.js"
