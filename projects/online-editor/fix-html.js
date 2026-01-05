@@ -14,6 +14,8 @@ function fixHtmlFiles(dir) {
       let content = fs.readFileSync(filePath, 'utf8');
       let originalContent = content;
       
+      console.log(`Processing: ${filePath}`);
+      
       // 1. Content-Type 메타 태그 추가 (가장 중요)
       if (!content.includes('http-equiv="Content-Type"')) {
         content = content.replace(
@@ -22,55 +24,80 @@ function fixHtmlFiles(dir) {
         );
       }
       
-      // 2. 가장 문제가 되는 fontFamily JSON 문자열 완전 수정
-      // system-ui,\"Segoe UI\",Roboto 패턴 수정
+      // 2. HTML을 더 읽기 쉽게 포맷팅 (한 줄로 된 것을 여러 줄로)
+      content = content.replace(/<head>/, '<head>\n');
+      content = content.replace(/<\/head>/, '\n</head>');
+      content = content.replace(/<body([^>]*)>/, '<body$1>\n');
+      content = content.replace(/<\/body>/, '\n</body>');
+      
+      // 3. 메타 태그들을 개별 라인으로 분리
+      content = content.replace(/><meta/g, '>\n<meta');
+      content = content.replace(/><link/g, '>\n<link');
+      content = content.replace(/><script/g, '>\n<script');
+      content = content.replace(/><title/g, '>\n<title');
+      
+      // 4. JSON 스크립트 내부의 fontFamily 문제 수정
       content = content.replace(
-        /system-ui,\\\\\"Segoe UI\\\\\",Roboto,Helvetica,Arial,sans-serif,\\\\\"Apple Color Emoji\\\\\",\\\\\"Segoe UI Emoji\\\\\"/g,
-        'system-ui,\\"Segoe UI\\",Roboto,Helvetica,Arial,sans-serif,\\"Apple Color Emoji\\",\\"Segoe UI Emoji\\"'
+        /"fontFamily":"system-ui,\\"Segoe UI\\",Roboto,Helvetica,Arial,sans-serif,\\"Apple Color Emoji\\",\\"Segoe UI Emoji\\""/g,
+        '"fontFamily":"system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji"'
       );
       
-      // 3. Apple Color Emoji 관련 문제 수정
-      content = content.replace(/\\\"Apple Color Emoji\\\",\\\"Segoe UI Emoji\\\"/g, '\\"Apple Color Emoji\\",\\"Segoe UI Emoji\\"');
+      // 5. 모든 JSON 내부의 이중 이스케이프 따옴표 수정
+      content = content.replace(/\\\\"/g, '\\"');
+      content = content.replace(/\\\\\\\\/g, '\\\\');
       
-      // 4. 모든 JSON 스크립트 내부의 fontFamily 속성 정리
-      content = content.replace(/"fontFamily":"([^"]*(?:\\\\[^"]*)*)"/, function(_, fontValue) {
-        // 이중 백슬래시를 단일 백슬래시로 변경
-        const cleanFont = fontValue.replace(/\\\\/g, '\\');
-        return `"fontFamily":"${cleanFont}"`;
-      });
-      
-      // 5. 모든 유니코드 엔티티 문제 수정
-      content = content.replace(/\\u0026\\u0026/g, '&&');
-      content = content.replace(/\\u0026/g, '&');
-      content = content.replace(/\u0026\u0026/g, '&&');
-      content = content.replace(/\u0026/g, '&');
-      
-      // 6. JSON 내부의 잘못된 이스케이프 수정 (더 정확한 패턴)
-      content = content.replace(/\\\\\"/g, '\\"');
-      
-      // 7. 특수 문자 엔티티 수정
+      // 6. 특수 문자 엔티티 수정
       content = content.replace(/&amp;/g, '&');
       content = content.replace(/&lt;/g, '<');
       content = content.replace(/&gt;/g, '>');
       content = content.replace(/&quot;/g, '"');
       content = content.replace(/&#x27;/g, "'");
       
-      // 8. JSON 스크립트 내부의 모든 문제가 되는 패턴 정리
+      // 7. 유니코드 엔티티 수정
+      content = content.replace(/\\u0026\\u0026/g, '&&');
+      content = content.replace(/\\u0026/g, '&');
+      content = content.replace(/\u0026\u0026/g, '&&');
+      content = content.replace(/\u0026/g, '&');
+      
+      // 8. JSON 스크립트 전체를 안전하게 정리
       content = content.replace(/<script[^>]*>self\.__next_f\.push\(\[1,"([^"]*(?:\\.[^"]*)*)"\]\)<\/script>/g, function(match, jsonContent) {
-        // JSON 내용을 안전하게 정리
-        let cleanJson = jsonContent
-          .replace(/\\\\\\\\/g, '\\\\')  // 4개 백슬래시를 2개로
-          .replace(/\\\\\"/g, '\\"')     // 이중 이스케이프 따옴표 정리
-          .replace(/\\\\n/g, '\\n')      // 이중 이스케이프 개행 정리
-          .replace(/\\\\t/g, '\\t');     // 이중 이스케이프 탭 정리
-        
-        return `<script>self.__next_f.push([1,"${cleanJson}"])</script>`;
+        try {
+          // JSON 내용을 안전하게 정리
+          let cleanJson = jsonContent
+            .replace(/\\\\\\\\/g, '\\\\')  // 4개 백슬래시를 2개로
+            .replace(/\\\\\"/g, '\\"')     // 이중 이스케이프 따옴표 정리
+            .replace(/\\\\n/g, '\\n')      // 이중 이스케이프 개행 정리
+            .replace(/\\\\t/g, '\\t')      // 이중 이스케이프 탭 정리
+            .replace(/system-ui,\\"Segoe UI\\"/g, 'system-ui,Segoe UI')  // 폰트 이름 정리
+            .replace(/\\"Apple Color Emoji\\"/g, 'Apple Color Emoji')
+            .replace(/\\"Segoe UI Emoji\\"/g, 'Segoe UI Emoji');
+          
+          return `<script>self.__next_f.push([1,"${cleanJson}"])</script>`;
+        } catch (e) {
+          console.log('JSON parsing error, keeping original:', e.message);
+          return match;
+        }
       });
+      
+      // 9. 마지막으로 HTML 구조 검증
+      const headOpenCount = (content.match(/<head>/g) || []).length;
+      const headCloseCount = (content.match(/<\/head>/g) || []).length;
+      const bodyOpenCount = (content.match(/<body[^>]*>/g) || []).length;
+      const bodyCloseCount = (content.match(/<\/body>/g) || []).length;
+      
+      console.log(`  Head tags: ${headOpenCount} open, ${headCloseCount} close`);
+      console.log(`  Body tags: ${bodyOpenCount} open, ${bodyCloseCount} close`);
+      
+      if (headOpenCount !== headCloseCount || bodyOpenCount !== bodyCloseCount) {
+        console.log(`  WARNING: Tag mismatch detected in ${filePath}`);
+      }
       
       // 변경사항이 있을 때만 파일 저장
       if (content !== originalContent) {
         fs.writeFileSync(filePath, content, 'utf8');
-        console.log(`Fixed: ${filePath}`);
+        console.log(`  Fixed: ${filePath}`);
+      } else {
+        console.log(`  No changes needed: ${filePath}`);
       }
     }
   });
@@ -78,8 +105,9 @@ function fixHtmlFiles(dir) {
 
 const outDir = path.join(__dirname, 'out');
 if (fs.existsSync(outDir)) {
+  console.log('Starting HTML fix process...');
   fixHtmlFiles(outDir);
-  console.log('HTML files fixed successfully!');
+  console.log('HTML files processing completed!');
 } else {
   console.log('Out directory not found.');
 }
