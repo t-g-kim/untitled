@@ -5,6 +5,12 @@
   Content-Type: text/html; charset=utf-8
   X-Content-Type-Options: nosniff
 
+# 매니페스트 파일 (최우선 설정)
+/manifest.json
+  Content-Type: application/manifest+json
+  Cache-Control: public, max-age=3600
+  X-Content-Type-Options: nosniff
+
 # 모든 파일에 기본 Content-Type 설정
 /*
   X-Content-Type-Options: nosniff
@@ -12,8 +18,3 @@
 # 정적 자산 캐싱
 /_next/static/*
   Cache-Control: public, max-age=31536000, immutable
-
-# 매니페스트 파일
-/manifest.json
-  Content-Type: application/manifest+json
-  Cache-Control: public, max-age=3600

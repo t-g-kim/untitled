@@ -118,6 +118,13 @@ function fixHtmlFiles(dir) {
       // 13. 빈 스크립트 태그 제거
       content = content.replace(/<script[^>]*><\/script>/g, '');
       
+      // 13-1. 사용되지 않는 preload 링크 제거 (97e13b192c5667fa.js 등)
+      // fetchPriority="low"이고 실제로 사용되지 않는 chunk preload 제거
+      content = content.replace(
+        /<link[^>]*rel="preload"[^>]*as="script"[^>]*fetchPriority="low"[^>]*href="\/_next\/static\/chunks\/[^"]*\.js"[^>]*>/g,
+        ''
+      );
+      
       // 14. 연속된 빈 줄 정리
       content = content.replace(/\n\s*\n\s*\n/g, '\n\n');
       
