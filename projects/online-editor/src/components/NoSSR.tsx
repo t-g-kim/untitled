@@ -19,6 +19,7 @@ const NoSSR = dynamic(() => Promise.resolve(NoSSRWrapper), {
       <div className="text-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-400 mx-auto mb-4"></div>
         <p className="text-gray-300">Loading Code Playground...</p>
+        <p className="text-sm text-gray-500 mt-2">If this takes too long, please refresh the page</p>
       </div>
     </div>
   ),

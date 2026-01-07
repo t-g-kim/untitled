@@ -28,7 +28,8 @@ export const metadata: Metadata = {
   alternates: {
     canonical: '/',
   },
-  manifest: "/manifest.json",
+  // manifest는 조건부로 로드 (404 에러 방지)
+  // manifest: "/manifest.json",
   openGraph: {
     type: "website",
     locale: "en_US",
@@ -85,6 +86,22 @@ export default function RootLayout({
         <link 
           href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600" 
           rel="stylesheet"
+        />
+        {/* manifest.json을 조건부로 로드하여 404 에러 방지 */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                var link = document.createElement('link');
+                link.rel = 'manifest';
+                link.href = '/manifest.json';
+                link.onerror = function() {
+                  console.warn('Manifest file not found, continuing without it');
+                };
+                document.head.appendChild(link);
+              })();
+            `,
+          }}
         />
       </head>
       <body
