@@ -1,14 +1,13 @@
 # Cloudflare Pages Headers 설정
-# HTML 파일이 올바른 Content-Type으로 제공되도록 설정
-
-/*.html
-  Content-Type: text/html; charset=utf-8
-  X-Content-Type-Options: nosniff
-
-# 매니페스트 파일 (최우선 설정)
+# 매니페스트 파일 (최우선 - 가장 먼저 처리되어야 함)
 /manifest.json
   Content-Type: application/manifest+json
   Cache-Control: public, max-age=3600
+  X-Content-Type-Options: nosniff
+
+# HTML 파일이 올바른 Content-Type으로 제공되도록 설정
+/*.html
+  Content-Type: text/html; charset=utf-8
   X-Content-Type-Options: nosniff
 
 # 모든 파일에 기본 Content-Type 설정

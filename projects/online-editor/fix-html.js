@@ -171,10 +171,34 @@ function fixHtmlFiles(dir) {
 }
 
 const outDir = path.join(__dirname, 'out');
+const functionsDir = path.join(__dirname, 'functions');
+const outFunctionsDir = path.join(outDir, 'functions');
+
 if (fs.existsSync(outDir)) {
   console.log('Starting aggressive fontFamily removal process...');
   fixHtmlFiles(outDir);
   console.log('HTML files processing completed!');
+  
+  // Cloudflare Pages Functions 복사
+  if (fs.existsSync(functionsDir)) {
+    console.log('Copying Cloudflare Pages Functions...');
+    if (!fs.existsSync(outFunctionsDir)) {
+      fs.mkdirSync(outFunctionsDir, { recursive: true });
+    }
+    
+    const files = fs.readdirSync(functionsDir);
+    files.forEach(file => {
+      const srcPath = path.join(functionsDir, file);
+      const destPath = path.join(outFunctionsDir, file);
+      const stat = fs.statSync(srcPath);
+      
+      if (stat.isFile()) {
+        fs.copyFileSync(srcPath, destPath);
+        console.log(`  Copied: ${file}`);
+      }
+    });
+    console.log('Functions copied successfully!');
+  }
 } else {
   console.log('Out directory not found.');
 }
