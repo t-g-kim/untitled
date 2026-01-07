@@ -1,11 +1,7 @@
 // Cloudflare Pages Functions - Middleware
 // manifest.json에 대한 올바른 Content-Type 헤더 설정 및 파일 존재 확인
 
-export async function onRequest(context: {
-  request: Request;
-  next: () => Promise<Response>;
-  env: any;
-}): Promise<Response> {
+export async function onRequest(context) {
   const { request, next } = context;
   const url = new URL(request.url);
   

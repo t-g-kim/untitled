@@ -179,26 +179,42 @@ if (fs.existsSync(outDir)) {
   fixHtmlFiles(outDir);
   console.log('HTML files processing completed!');
   
-  // Cloudflare Pages Functions 복사
-  if (fs.existsSync(functionsDir)) {
-    console.log('Copying Cloudflare Pages Functions...');
-    if (!fs.existsSync(outFunctionsDir)) {
-      fs.mkdirSync(outFunctionsDir, { recursive: true });
-    }
-    
-    const files = fs.readdirSync(functionsDir);
-    files.forEach(file => {
-      const srcPath = path.join(functionsDir, file);
-      const destPath = path.join(outFunctionsDir, file);
-      const stat = fs.statSync(srcPath);
-      
-      if (stat.isFile()) {
-        fs.copyFileSync(srcPath, destPath);
-        console.log(`  Copied: ${file}`);
+    // Cloudflare Pages Functions 복사
+    if (fs.existsSync(functionsDir)) {
+      console.log('Copying Cloudflare Pages Functions...');
+      if (!fs.existsSync(outFunctionsDir)) {
+        fs.mkdirSync(outFunctionsDir, { recursive: true });
       }
-    });
-    console.log('Functions copied successfully!');
-  }
+      
+      const files = fs.readdirSync(functionsDir);
+      files.forEach(file => {
+        const srcPath = path.join(functionsDir, file);
+        const destPath = path.join(outFunctionsDir, file);
+        const stat = fs.statSync(srcPath);
+        
+        if (stat.isFile()) {
+          // TypeScript 파일은 JavaScript로 변환하지 않고 그대로 복사
+          // Cloudflare Pages가 자동으로 처리함
+          fs.copyFileSync(srcPath, destPath);
+          console.log(`  Copied: ${file}`);
+        } else if (stat.isDirectory()) {
+          // 하위 디렉토리도 복사
+          const subDir = path.join(outFunctionsDir, file);
+          if (!fs.existsSync(subDir)) {
+            fs.mkdirSync(subDir, { recursive: true });
+          }
+          // 재귀적으로 복사
+          const subFiles = fs.readdirSync(srcPath);
+          subFiles.forEach(subFile => {
+            const subSrcPath = path.join(srcPath, subFile);
+            const subDestPath = path.join(subDir, subFile);
+            fs.copyFileSync(subSrcPath, subDestPath);
+            console.log(`  Copied: ${file}/${subFile}`);
+          });
+        }
+      });
+      console.log('Functions copied successfully!');
+    }
 } else {
   console.log('Out directory not found.');
 }
