@@ -1,48 +1,19 @@
-# HTML 파일 Content-Type 명시 (최우선) - 모든 HTML 파일
+# Cloudflare Pages Headers 설정
+# HTML 파일이 올바른 Content-Type으로 제공되도록 설정
+
 /*.html
   Content-Type: text/html; charset=utf-8
   X-Content-Type-Options: nosniff
 
-/index.html
-  Content-Type: text/html; charset=utf-8
-  X-Content-Type-Options: nosniff
-
-# 루트 경로도 HTML로 처리
-/
-  Content-Type: text/html; charset=utf-8
-  X-Content-Type-Options: nosniff
-
-# 모든 경로를 HTML로 처리 (가장 강력한 설정)
+# 모든 파일에 기본 Content-Type 설정
 /*
-  Content-Type: text/html; charset=utf-8
   X-Content-Type-Options: nosniff
 
-# Pyodide 보안 헤더 (Python 실행을 위해 필요)
-/*
-  Cross-Origin-Embedder-Policy: require-corp
-  Cross-Origin-Opener-Policy: same-origin
-  X-Frame-Options: DENY
-  Referrer-Policy: origin-when-cross-origin
-  Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
-  X-XSS-Protection: 1; mode=block
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self' https://cdn.jsdelivr.net; worker-src 'self' blob:; child-src 'self' blob:;
-
-# SVG 파일 MIME 타입 설정
-*.svg
-  Content-Type: image/svg+xml
-
-# 정적 자산 캐싱 최적화
-/favicon.svg
-  Cache-Control: public, max-age=31536000, immutable
-  Content-Type: image/svg+xml
-
-/icon*.svg
-  Cache-Control: public, max-age=31536000, immutable
-  Content-Type: image/svg+xml
-
-/logo.svg
-  Cache-Control: public, max-age=31536000, immutable
-  Content-Type: image/svg+xml
-
+# 정적 자산 캐싱
 /_next/static/*
   Cache-Control: public, max-age=31536000, immutable
+
+# 매니페스트 파일
+/manifest.json
+  Content-Type: application/manifest+json
+  Cache-Control: public, max-age=3600

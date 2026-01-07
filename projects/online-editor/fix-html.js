@@ -16,9 +16,26 @@ function fixHtmlFiles(dir) {
       
       console.log(`Processing: ${filePath}`);
       
-      // 1. DOCTYPE 확인 및 추가
-      if (!content.startsWith('<!DOCTYPE html>')) {
-        content = '<!DOCTYPE html>' + content.substring(content.indexOf('<html'));
+      // 1. DOCTYPE 확인 및 추가 (주석 처리 포함)
+      const doctypeRegex = /<!DOCTYPE\s+html\s*>/i;
+      if (!doctypeRegex.test(content)) {
+        // <html 태그를 찾아서 그 앞에 DOCTYPE 추가
+        const htmlIndex = content.search(/<html[\s>]/i);
+        if (htmlIndex !== -1) {
+          // <html 태그 앞의 공백/줄바꿈 확인
+          const beforeHtml = content.substring(0, htmlIndex).trim();
+          if (beforeHtml.length === 0 || beforeHtml.startsWith('<!--')) {
+            // 주석이 있거나 공백만 있는 경우, DOCTYPE을 맨 앞에 추가
+            content = '<!DOCTYPE html>\n' + content.substring(htmlIndex);
+          } else {
+            // 다른 내용이 있는 경우, <html 앞에 DOCTYPE 추가
+            content = content.substring(0, htmlIndex) + '<!DOCTYPE html>\n' + content.substring(htmlIndex);
+          }
+        } else {
+          // <html 태그를 찾을 수 없는 경우, 파일 시작 부분에 DOCTYPE 추가
+          console.log(`  WARNING: Could not find <html> tag in ${filePath}`);
+          content = '<!DOCTYPE html>\n' + content;
+        }
       }
       
       // 2. Content-Type 메타 태그 추가 (가장 중요)
