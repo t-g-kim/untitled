@@ -5,7 +5,7 @@ import CodeEditor from '@/components/CodeEditor';
 import OutputConsole from '@/components/OutputConsole';
 import LanguageSelector from '@/components/LanguageSelector';
 import HTMLPreview from '@/components/HTMLPreview';
-import NoSSR from '@/components/NoSSR';
+// NoSSR 제거 - 직접 렌더링으로 변경
 import ResizablePanel from '@/components/ResizablePanel';
 import { getPyodideRunner } from '@/lib/pyodide-runner';
 import { codeRunner } from '@/lib/code-runner';
@@ -20,13 +20,18 @@ function CodePlayground() {
   const [output, setOutput] = useState<string[]>([]);
   const [errors, setErrors] = useState<string[]>([]);
   const [isRunning, setIsRunning] = useState(false);
-  const [isInitializing, setIsInitializing] = useState(true);
+  const [isInitializing, setIsInitializing] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
   const [htmlContent, setHtmlContent] = useState('');
 
-  // Initialize Python runtime only
+  // Initialize Python runtime only when needed
   useEffect(() => {
     const initializePyodide = async () => {
+      if (currentLanguage !== 'python') {
+        return;
+      }
+      
+      setIsInitializing(true);
       try {
         setOutput(['🐍 Initializing Python runtime...']);
         const runner = getPyodideRunner();
@@ -45,11 +50,9 @@ function CodePlayground() {
       }
     };
 
-    // Only initialize Pyodide if Python is selected or if we want to preload it
+    // Only initialize Pyodide if Python is selected
     if (currentLanguage === 'python') {
       initializePyodide();
-    } else {
-      setIsInitializing(false);
     }
   }, [currentLanguage]);
 
@@ -372,9 +375,5 @@ function CodePlayground() {
 }
 
 export default function Home() {
-  return (
-    <NoSSR>
-      <CodePlayground />
-    </NoSSR>
-  );
+  return <CodePlayground />;
 }
