@@ -46,10 +46,16 @@ function fixHtmlFiles(dir) {
         );
       }
       
-      // 2-1. manifest.json 링크를 조건부로 로드하도록 수정 (404 에러 방지)
+      // 2-1. manifest.json 링크 완전 제거 (404 에러 방지)
       content = content.replace(
         /<link\s+rel="manifest"\s+href="\/manifest\.json"[^>]*>/gi,
-        '<script>(function(){var link=document.createElement("link");link.rel="manifest";link.href="/manifest.json";link.onerror=function(){console.warn("Manifest file not found, continuing without it");};document.head.appendChild(link);})();</script>'
+        '<!-- manifest.json link removed to prevent 404 errors -->'
+      );
+      
+      // 2-2. JavaScript 내부의 manifest 링크도 제거
+      content = content.replace(
+        /\["\\$","link","3",\{[^}]*"rel":"manifest"[^}]*\}[^\]]*\]/g,
+        ''
       );
       
       // 3. 모든 fontFamily 관련 JSON 스크립트 완전 제거 (더 강력한 패턴)
