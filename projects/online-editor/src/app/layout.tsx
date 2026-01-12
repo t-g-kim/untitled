@@ -75,8 +75,6 @@ export default function RootLayout({
     <html lang="en" className="dark" suppressHydrationWarning={true}>
       <head>
         <meta httpEquiv="Content-Type" content="text/html; charset=utf-8" />
-        <script src="/fix-entities.js" />
-        <script src="/error-handler.js" async />
         <script 
           src="https://cdn.jsdelivr.net/pyodide/v0.29.0/full/pyodide.js"
           async
