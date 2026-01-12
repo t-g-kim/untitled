@@ -127,8 +127,9 @@ function fixHtmlFiles(dir) {
       content = content.replace(/\u0026\u0026/g, '&&');
       content = content.replace(/\u0026/g, '&');
       
-      // 13. 빈 스크립트 태그 제거
-      content = content.replace(/<script[^>]*><\/script>/g, '');
+      // 13. 빈 인라인 스크립트 태그만 제거 (src 속성이 없는 것)
+      // src 속성이 있는 외부 스크립트는 보존
+      content = content.replace(/<script(?![^>]*\ssrc=)[^>]*><\/script>/g, '');
       
       // 13-1. 사용되지 않는 preload 링크 제거 (97e13b192c5667fa.js 등)
       // fetchPriority="low"이고 실제로 사용되지 않는 chunk preload 제거
@@ -168,10 +169,11 @@ function fixHtmlFiles(dir) {
         fontFamilyMatches.forEach((match, i) => {
           console.log(`    ${i + 1}: ${match.substring(0, 80)}...`);
         });
-        
-        // 해당 스크립트 전체를 제거
+
+        // 인라인 스크립트만 제거 (src 속성이 없는 스크립트)
+        // src 속성이 있는 외부 스크립트는 보존
         content = content.replace(
-          /<script[^>]*>[^<]*fontFamily[^<]*<\/script>/g,
+          /<script(?![^>]*\ssrc=)[^>]*>[\s\S]*?fontFamily[\s\S]*?<\/script>/g,
           ''
         );
       } else {
