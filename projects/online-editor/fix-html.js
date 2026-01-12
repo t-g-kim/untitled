@@ -102,30 +102,11 @@ function fixHtmlFiles(dir) {
         '"'
       );
       
-      // 9. HTML을 더 읽기 쉽게 포맷팅
-      content = content.replace(/<head>/, '<head>\n');
-      content = content.replace(/<\/head>/, '\n</head>');
-      content = content.replace(/<body([^>]*)>/, '<body$1>\n');
-      content = content.replace(/<\/body>/, '\n</body>');
+      // 9-10. HTML 포맷팅 제거 (HTML 구조를 파괴함)
+      // 포맷팅을 시도하지 않고 원본 HTML 구조 유지
       
-      // 10. 메타 태그들을 개별 라인으로 분리
-      content = content.replace(/><meta/g, '>\n<meta');
-      content = content.replace(/><link/g, '>\n<link');
-      content = content.replace(/><script/g, '>\n<script');
-      content = content.replace(/><title/g, '>\n<title');
-      
-      // 11. 특수 문자 엔티티 수정
-      content = content.replace(/&amp;/g, '&');
-      content = content.replace(/&lt;/g, '<');
-      content = content.replace(/&gt;/g, '>');
-      content = content.replace(/&quot;/g, '"');
-      content = content.replace(/&#x27;/g, "'");
-      
-      // 12. 유니코드 엔티티 수정
-      content = content.replace(/\\u0026\\u0026/g, '&&');
-      content = content.replace(/\\u0026/g, '&');
-      content = content.replace(/\u0026\u0026/g, '&&');
-      content = content.replace(/\u0026/g, '&');
+      // 11-12. 특수 문자 및 유니코드 엔티티 수정 제거
+      // HTML 엔티티는 브라우저가 자동으로 처리하도록 유지
       
       // 13. 빈 인라인 스크립트 태그만 제거 (src 속성이 없는 것)
       // src 속성이 있는 외부 스크립트는 보존
@@ -145,8 +126,7 @@ function fixHtmlFiles(dir) {
         ''
       );
       
-      // 14. 연속된 빈 줄 정리
-      content = content.replace(/\n\s*\n\s*\n/g, '\n\n');
+      // 14. 연속된 빈 줄 정리 제거 (HTML 한 줄 형식 유지)
       
       // 15. HTML 구조 검증
       const headOpenCount = (content.match(/<head>/g) || []).length;
@@ -161,23 +141,14 @@ function fixHtmlFiles(dir) {
         console.log(`  WARNING: Tag mismatch detected in ${filePath}`);
       }
       
-      // 16. fontFamily 패턴 검사 (최종 확인)
+      // 16. fontFamily 패턴 검사 제거
+      // fontFamily는 404 페이지의 스타일링에 사용되며, 제거하면 HTML 구조가 파괴됨
+      // 브라우저가 정상적으로 처리할 수 있으므로 그대로 유지
       const fontFamilyMatches = content.match(/fontFamily[^}]*\\"/g);
       if (fontFamilyMatches) {
-        console.log(`  WARNING: Still found ${fontFamilyMatches.length} problematic fontFamily patterns`);
-        // 남은 패턴들을 강제로 제거
-        fontFamilyMatches.forEach((match, i) => {
-          console.log(`    ${i + 1}: ${match.substring(0, 80)}...`);
-        });
-
-        // 인라인 스크립트만 제거 (src 속성이 없는 스크립트)
-        // src 속성이 있는 외부 스크립트는 보존
-        content = content.replace(
-          /<script(?![^>]*\ssrc=)[^>]*>[\s\S]*?fontFamily[\s\S]*?<\/script>/g,
-          ''
-        );
+        console.log(`  INFO: Found ${fontFamilyMatches.length} fontFamily patterns (keeping them)`);
       } else {
-        console.log(`  ✓ No problematic fontFamily patterns found`);
+        console.log(`  ✓ No fontFamily patterns found`);
       }
       
       // 변경사항이 있을 때만 파일 저장
