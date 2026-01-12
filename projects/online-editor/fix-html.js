@@ -137,14 +137,12 @@ function fixHtmlFiles(dir) {
         ''
       );
       
-      // 13-2. Next.js JavaScript 파일 로드 확인 및 추가
-      // body 끝나기 전에 필요한 JavaScript 파일들이 로드되는지 확인
-      if (!content.includes('turbopack-4bf84f3befa00ac7.js') && !content.includes('src="/_next/static/chunks/')) {
-        // turbopack 파일이 없으면 추가
-        const turbopackScript = '<script src="/_next/static/chunks/turbopack-4bf84f3befa00ac7.js"></script>';
-        const mainChunkScript = '<script src="/_next/static/chunks/4a027fbce50e9aa8.js"></script>';
-        content = content.replace(/<\/body>/i, turbopackScript + '\n' + mainChunkScript + '\n</body>');
-      }
+      // 13-2. Turbopack 스크립트 제거 (개발 전용, 프로덕션에 불필요)
+      // Turbopack은 개발 서버 전용이므로 프로덕션 빌드에서 제거
+      content = content.replace(
+        /<script[^>]*src="\/_next\/static\/chunks\/turbopack-[^"]*\.js"[^>]*><\/script>\s*/g,
+        ''
+      );
       
       // 14. 연속된 빈 줄 정리
       content = content.replace(/\n\s*\n\s*\n/g, '\n\n');

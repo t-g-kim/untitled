@@ -1,19 +1,38 @@
-# Cloudflare Pages Headers 설정
-# 매니페스트 파일 (최우선 - 가장 먼저 처리되어야 함)
+# 매니페스트 파일
 /manifest.json
   Content-Type: application/manifest+json
   Cache-Control: public, max-age=3600
 
-# HTML 파일이 올바른 Content-Type으로 제공되도록 설정
+# HTML 파일
 /*.html
   Content-Type: text/html; charset=utf-8
 
-# 기본 보안 헤더 (완화된 설정)
+# JavaScript 파일 MIME 타입 설정
+/*.js
+  Content-Type: application/javascript
+
+/_next/static/chunks/*.js
+  Content-Type: application/javascript
+  Cache-Control: public, max-age=31536000, immutable
+
+# CSS 파일 MIME 타입 설정
+/*.css
+  Content-Type: text/css
+
+/_next/static/chunks/*.css
+  Content-Type: text/css
+  Cache-Control: public, max-age=31536000, immutable
+
+# SVG 파일 MIME 타입 설정
+/*.svg
+  Content-Type: image/svg+xml
+
+# 기본 보안 헤더
 /*
   X-Frame-Options: SAMEORIGIN
   Referrer-Policy: strict-origin-when-cross-origin
   X-Content-Type-Options: nosniff
-  Content-Security-Policy: default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://fonts.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https:; connect-src 'self' https: wss: blob:; worker-src 'self' blob:; child-src 'self' blob:;
+  Content-Security-Policy: default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://fonts.googleapis.com https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https:; connect-src 'self' https: wss: blob:; worker-src 'self' blob:; child-src 'self' blob:;
 
 # 정적 자산 캐싱
 /_next/static/*
