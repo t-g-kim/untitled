@@ -1,8 +1,15 @@
 'use client';
 
-import { useRef, useEffect } from 'react';
-import Editor from '@monaco-editor/react';
+import { useRef, useEffect, useState } from 'react';
+import Editor, { loader } from '@monaco-editor/react';
 import type { editor } from 'monaco-editor';
+
+// Configure Monaco Editor to use CDN
+loader.config({
+  paths: {
+    vs: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs'
+  }
+});
 
 interface CodeEditorProps {
   code: string;
@@ -14,9 +21,11 @@ interface CodeEditorProps {
 export default function CodeEditor({ code, onChange, language, onFormat }: CodeEditorProps) {
   const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const [isEditorReady, setIsEditorReady] = useState(false);
 
   const handleEditorDidMount = (editor: editor.IStandaloneCodeEditor) => {
     editorRef.current = editor;
+    setIsEditorReady(true);
     
     // Define custom theme for better syntax highlighting
     const monacoEditor = (window as any).monaco;
@@ -609,7 +618,8 @@ export default function CodeEditor({ code, onChange, language, onFormat }: CodeE
             <div className="flex items-center justify-center h-full bg-gray-800">
               <div className="text-center">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-400 mx-auto mb-2"></div>
-                <p className="text-sm text-gray-400">Loading Editor...</p>
+                <p className="text-sm text-gray-400">Loading Monaco Editor from CDN...</p>
+                <p className="text-xs text-gray-500 mt-1">This may take a moment on first load</p>
               </div>
             </div>
           }
