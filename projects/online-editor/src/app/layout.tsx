@@ -76,9 +76,6 @@ export default function RootLayout({
       <head>
         <meta httpEquiv="Content-Type" content="text/html; charset=utf-8" />
         
-        {/* Monaco Editor initialization - Must load before app */}
-        <script src="/init-monaco.js" />
-        
         <script 
           src="https://cdn.jsdelivr.net/pyodide/v0.29.0/full/pyodide.js"
           async
