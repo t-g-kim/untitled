@@ -13,43 +13,41 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Code Playground - Multi-Language Online Editor",
-  description: "Write, run, and share code in multiple languages in your browser. Supports Python, JavaScript, TypeScript, HTML, CSS, and JSON. No installation required.",
-  keywords: "code editor, online compiler, python, javascript, typescript, html, css, json, programming, coding, web development, online IDE, code playground, python online, javascript online, typescript online, html editor, css editor, code runner, browser IDE, no installation, free coding, learn programming",
-  authors: [{ name: "Code Playground" }],
-  creator: "Code Playground",
-  publisher: "Code Playground",
+  title: "Python Online Editor - Run Python in Your Browser",
+  description: "Write and run Python code directly in your browser. No installation required. Features include syntax highlighting, instant execution with Pyodide, and a clean interface.",
+  keywords: "python editor, online python, python playground, python compiler, run python online, python ide, browser python, pyodide, python online compiler, learn python",
+  authors: [{ name: "Python Online Editor" }],
+  creator: "Python Online Editor",
+  publisher: "Python Online Editor",
   formatDetection: {
     email: false,
     address: false,
     telephone: false,
   },
-  metadataBase: new URL('https://code-playground.pages.dev'),
+  metadataBase: new URL('https://editor.readme.website'),
   alternates: {
     canonical: '/',
   },
-  // manifest는 조건부로 로드 (404 에러 방지)
-  // manifest: "/manifest.json",
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://code-playground.pages.dev",
-    title: "Code Playground - Multi-Language Online Editor",
-    description: "Write, run, and share code in multiple languages in your browser. Supports Python, JavaScript, TypeScript, HTML, CSS, and JSON.",
-    siteName: "Code Playground",
+    url: "https://editor.readme.website",
+    title: "Python Online Editor - Run Python in Your Browser",
+    description: "Write and run Python code directly in your browser. No installation required.",
+    siteName: "Python Online Editor",
     images: [
       {
         url: '/og-image.svg',
         width: 1200,
         height: 630,
-        alt: 'Code Playground - Multi-Language Online Editor',
+        alt: 'Python Online Editor',
       }
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: "Code Playground - Multi-Language Online Editor",
-    description: "Write, run, and share code in multiple languages in your browser.",
+    title: "Python Online Editor - Run Python in Your Browser",
+    description: "Write and run Python code directly in your browser.",
     images: ['/og-image.svg'],
   },
   robots: {
