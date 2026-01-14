@@ -4,13 +4,6 @@ import { useRef, useEffect, useState } from 'react';
 import Editor, { loader } from '@monaco-editor/react';
 import type { editor } from 'monaco-editor';
 
-// Configure Monaco Editor to use CDN
-loader.config({
-  paths: {
-    vs: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs'
-  }
-});
-
 interface CodeEditorProps {
   code: string;
   onChange: (code: string) => void;
@@ -22,6 +15,23 @@ export default function CodeEditor({ code, onChange, language, onFormat }: CodeE
   const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [isEditorReady, setIsEditorReady] = useState(false);
+  const [loaderError, setLoaderError] = useState<string | null>(null);
+
+  // Configure Monaco Editor CDN on mount
+  useEffect(() => {
+    try {
+      console.log('Configuring Monaco Editor loader...');
+      loader.config({
+        paths: {
+          vs: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs'
+        }
+      });
+      console.log('Monaco Editor loader configured successfully');
+    } catch (error) {
+      console.error('Failed to configure Monaco Editor loader:', error);
+      setLoaderError(error instanceof Error ? error.message : 'Unknown error');
+    }
+  }, []);
 
   const handleEditorDidMount = (editor: editor.IStandaloneCodeEditor) => {
     editorRef.current = editor;
@@ -564,6 +574,12 @@ export default function CodeEditor({ code, onChange, language, onFormat }: CodeE
 
   return (
     <div ref={containerRef} className="h-full flex flex-col bg-gray-800" tabIndex={-1}>
+      {loaderError && (
+        <div className="p-4 bg-red-900/50 border-b border-red-700">
+          <p className="text-sm text-red-200">Failed to configure Monaco Editor: {loaderError}</p>
+        </div>
+      )}
+      
       {/* Format Buttons */}
       {canFormat() && (
         <div className="flex justify-end p-2 bg-gray-800 border-b border-gray-700">
@@ -612,6 +628,11 @@ export default function CodeEditor({ code, onChange, language, onFormat }: CodeE
           language={language}
           value={code}
           onChange={handleEditorChange}
+          beforeMount={(monaco) => {
+            console.log('Monaco Editor beforeMount called');
+            // Monaco is now available
+            (window as any).monaco = monaco;
+          }}
           onMount={handleEditorDidMount}
           theme="custom-dark"
           loading={
