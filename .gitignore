@@ -91,7 +91,7 @@ dist
 
 # Gatsby files
 .cache/
-public
+# public - 제외됨 (Next.js 프로젝트는 public 폴더가 필요함)
 
 # Storybook build outputs
 .out

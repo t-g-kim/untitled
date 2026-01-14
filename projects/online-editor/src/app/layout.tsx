@@ -39,7 +39,7 @@ export const metadata: Metadata = {
     siteName: "Code Playground",
     images: [
       {
-        url: '/og-image.png',
+        url: '/og-image.svg',
         width: 1200,
         height: 630,
         alt: 'Code Playground - Multi-Language Online Editor',
@@ -50,7 +50,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: "Code Playground - Multi-Language Online Editor",
     description: "Write, run, and share code in multiple languages in your browser.",
-    images: ['/og-image.png'],
+    images: ['/og-image.svg'],
   },
   robots: {
     index: true,
