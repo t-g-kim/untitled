@@ -22,6 +22,27 @@ export default function CodeEditor({ code, onChange, language, onFormat }: CodeE
   useEffect(() => {
     setMounted(true);
     console.log('CodeEditor mounted on client side');
+    
+    // Wait for Monaco to be ready
+    const checkMonacoReady = () => {
+      if ((window as any).__MONACO_READY__) {
+        console.log('Monaco is ready from global flag');
+        return;
+      }
+      
+      // Listen for Monaco ready event
+      const handleMonacoReady = () => {
+        console.log('Monaco ready event received');
+      };
+      
+      window.addEventListener('monaco-ready', handleMonacoReady);
+      
+      return () => {
+        window.removeEventListener('monaco-ready', handleMonacoReady);
+      };
+    };
+    
+    checkMonacoReady();
   }, []);
 
   // Configure Monaco Editor CDN on mount

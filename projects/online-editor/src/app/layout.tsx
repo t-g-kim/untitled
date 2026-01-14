@@ -76,22 +76,8 @@ export default function RootLayout({
       <head>
         <meta httpEquiv="Content-Type" content="text/html; charset=utf-8" />
         
-        {/* Monaco Editor CDN - Load before app initialization */}
-        <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs/loader.js" />
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              if (typeof require !== 'undefined') {
-                require.config({ 
-                  paths: { 
-                    vs: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs' 
-                  } 
-                });
-                console.log('Monaco Editor loader configured via require.config');
-              }
-            `,
-          }}
-        />
+        {/* Monaco Editor initialization - Must load before app */}
+        <script src="/init-monaco.js" />
         
         <script 
           src="https://cdn.jsdelivr.net/pyodide/v0.29.0/full/pyodide.js"
