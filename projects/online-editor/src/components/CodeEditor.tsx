@@ -16,22 +16,47 @@ export default function CodeEditor({ code, onChange, language, onFormat }: CodeE
   const containerRef = useRef<HTMLDivElement>(null);
   const [isEditorReady, setIsEditorReady] = useState(false);
   const [loaderError, setLoaderError] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  // Ensure component is mounted (client-side only)
+  useEffect(() => {
+    setMounted(true);
+    console.log('CodeEditor mounted on client side');
+  }, []);
 
   // Configure Monaco Editor CDN on mount
   useEffect(() => {
+    if (!mounted) return;
+    
     try {
       console.log('Configuring Monaco Editor loader...');
+      
+      // Check if Monaco loader is available from CDN
+      if (typeof (window as any).require !== 'undefined') {
+        console.log('AMD require is available (from Monaco CDN)');
+      }
+      
       loader.config({
         paths: {
           vs: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs'
         }
       });
+      
       console.log('Monaco Editor loader configured successfully');
+      
+      // Pre-initialize Monaco to check if it can be loaded
+      loader.init().then((monaco) => {
+        console.log('Monaco Editor initialized successfully:', monaco);
+      }).catch((error) => {
+        console.error('Failed to initialize Monaco Editor:', error);
+        setLoaderError(error.message);
+      });
+      
     } catch (error) {
       console.error('Failed to configure Monaco Editor loader:', error);
       setLoaderError(error instanceof Error ? error.message : 'Unknown error');
     }
-  }, []);
+  }, [mounted]);
 
   const handleEditorDidMount = (editor: editor.IStandaloneCodeEditor) => {
     editorRef.current = editor;
@@ -580,8 +605,17 @@ export default function CodeEditor({ code, onChange, language, onFormat }: CodeE
         </div>
       )}
       
-      {/* Format Buttons */}
-      {canFormat() && (
+      {!mounted ? (
+        <div className="flex items-center justify-center h-full bg-gray-800">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-400 mx-auto mb-2"></div>
+            <p className="text-sm text-gray-400">Initializing editor...</p>
+          </div>
+        </div>
+      ) : (
+        <>
+          {/* Format Buttons */}
+          {canFormat() && (
         <div className="flex justify-end p-2 bg-gray-800 border-b border-gray-700">
           {language === 'json' ? (
             <div className="flex space-x-2">
@@ -691,6 +725,8 @@ export default function CodeEditor({ code, onChange, language, onFormat }: CodeE
           }}
         />
       </div>
+        </>
+      )}
     </div>
   );
 }
