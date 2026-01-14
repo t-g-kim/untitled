@@ -600,10 +600,19 @@ export default function CodeEditor({ code, onChange, language, onFormat }: CodeE
         <Editor
           height="100%"
           defaultLanguage={language}
+          language={language}
           value={code}
           onChange={handleEditorChange}
           onMount={handleEditorDidMount}
           theme="custom-dark"
+          loading={
+            <div className="flex items-center justify-center h-full bg-gray-800">
+              <div className="text-center">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-400 mx-auto mb-2"></div>
+                <p className="text-sm text-gray-400">Loading Editor...</p>
+              </div>
+            </div>
+          }
           options={{
             minimap: { enabled: false },
             fontSize: 14,
